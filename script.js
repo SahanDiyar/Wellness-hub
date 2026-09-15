@@ -43,7 +43,7 @@ if (checkinForm) {
     };
 
     if (existingIndex !== -1) {
-      checkIns[existingIndex] = entry; // Update today's entry if resubmitted
+      checkIns[existingIndex] = entry; 
     } else {
       checkIns.push(entry);
     }
@@ -74,25 +74,28 @@ function updateInsights() {
   weeklyValEl.innerText = `${recentCheckins.length} / 7 days`;
   monthlyValEl.innerText = `${checkIns.length} days`;
 
+  // Get the most recent check-in to evaluate today's specific habits
+  const latest = checkIns[checkIns.length - 1];
   let tips = [];
-  let lowWaterCount = recentCheckins.filter(c => c.water === 'no').length;
-  let lowSleepCount = recentCheckins.filter(c => c.sleep === 'less-than-6').length;
-  let lowExerciseCount = recentCheckins.filter(c => c.exerciseYn === 'no').length;
 
-  if (lowWaterCount >= 2) {
-    tips.push("💧 **Hydration Focus:** You missed your 1-liter water target a few times recently. Keep a water bottle close to stay on track!");
+  if (latest.water === 'no') {
+    tips.push("💧 **Hydration Alert:** You drank less than 1 liter of water today. Make sure to grab a glass of water right now!");
   }
-  if (lowSleepCount >= 2) {
-    tips.push("😴 **Sleep Recovery:** You logged under 6 hours of sleep multiple times. Try winding down a bit earlier to boost your energy.");
+  if (latest.sleep === 'less-than-6') {
+    tips.push("😴 **Rest Alert:** You slept for less than 6 hours. Try to get to bed earlier tonight to recharge your energy.");
   }
-  if (lowExerciseCount >= 3) {
-    tips.push("🏃 **Activity Reminder:** Movement has been low this week. Even a light 15-minute walk or workout session will make a big difference!");
+  if (latest.exerciseYn === 'no') {
+    tips.push("🏃 **Movement Tip:** No exercise was logged today. Even a short 15-minute walk or light stretching can help.");
+  }
+  if (latest.nutritionYn === 'no' || latest.nutritionScore <= 2) {
+    tips.push("🥗 **Nutrition Tip:** Your food choices today lean a bit unhealthy. Try adding some fresh fruits or vegetables to your next meal!");
   }
 
   if (tips.length === 0) {
-    tips.push("🌟 **Fantastic Consistency!** You are keeping up with great habits across your water, sleep, and exercise goals. Keep it up!");
+    tips.push("🌟 **Great Job Today!** You hit your water, sleep, and activity goals. Keep up the brilliant consistency!");
   }
 
+  // Render tips cleanly without raw markdown symbols
   tipsBox.innerHTML = tips.join("<br><br>");
 }
 
