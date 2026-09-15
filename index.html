@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wellness Hub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body id="body-layout">
+  <div class="container">
+    <header>
+      <h1>🌱 Wellness Hub</h1>
+      <p>Track your daily health habits and review your progress.</p>
+    </header>
+
+    <main>
+      <!-- Daily Check-In Form Section -->
+      <section class="card">
+        <h2>Daily Check-In</h2>
+        <form id="checkin-form">
+          <div class="form-group">
+            <label>1. Did you drink more than 1 liter of water today?</label>
+            <select id="water-input" required>
+              <option value="">Select...</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>2. Did you exercise today?</label>
+            <select id="exercise-yn" onchange="toggleExerciseDetails()" required>
+              <option value="">Select...</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+
+          <div id="exercise-details" style="display: none;">
+            <div class="form-group">
+              <label>What exercise did you do?</label>
+              <input type="text" id="exercise-type" placeholder="e.g., Running, Weightlifting, Taekwondo">
+            </div>
+            <div class="form-group">
+              <label>How many minutes did you spend?</label>
+              <input type="number" id="exercise-minutes" min="1" placeholder="e.g., 30">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>3. Did you eat nutritious food?</label>
+            <select id="nutrition-yn" onchange="toggleNutritionDetails()" required>
+              <option value="">Select...</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+
+          <div id="nutrition-details" style="display: none;">
+            <div class="form-group">
+              <label>How nutritious was it? (Scale 1-5)</label>
+              <select id="nutrition-score">
+                <option value="5">5 - Extremely Nutritious</option>
+                <option value="4">4 - Mostly Nutritious</option>
+                <option value="3">3 - Moderate</option>
+                <option value="2">2 - A bit unhealthy</option>
+                <option value="1">1 - Very Junk/Unhealthy</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>4. How much did you sleep?</label>
+            <select id="sleep-input" required>
+              <option value="">Select...</option>
+              <option value="6-8">6 - 8 hours</option>
+              <option value="less-than-6">Less than 6 hours</option>
+              <option value="more-than-8">More than 8 hours</option>
+            </select>
+          </div>
+
+          <button type="submit">Submit Today's Check-In</button>
+        </form>
+        <div id="form-feedback" style="margin-top: 10px; font-weight: bold;"></div>
+      </section>
+
+      <!-- Weekly & Monthly Insights Section -->
+      <section class="card">
+        <h2>Weekly & Monthly Insights</h2>
+        <div class="metrics-grid">
+          <div class="metric-box">
+            <h3>Weekly Consistency</h3>
+            <p id="weekly-score-val">0 / 7</p>
+          </div>
+          <div class="metric-box">
+            <h3>Total Logged Days</h3>
+            <p id="monthly-score-val">0 days</p>
+          </div>
+        </div>
+        <div style="margin-top: 20px;">
+          <h3>Areas for Improvement & Feedback</h3>
+          <div id="feedback-tips-box" style="padding: 12px; background: rgba(0,0,0,0.03); border-radius: 6px; border: 1px solid var(--border-color); margin-top: 8px; font-size: 0.95rem; line-height: 1.4;">
+            Submit your daily check-ins to receive custom wellness feedback and improvement tips!
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
