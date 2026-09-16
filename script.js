@@ -59,46 +59,68 @@ if (checkinForm) {
   });
 }
 
-// --- SMART MEAL RATER LOGIC ---
+// --- SMART MEAL RATER LOGIC (MULTI-MEAL) ---
 const mealForm = document.getElementById('meal-form');
 if (mealForm) {
   mealForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const mealText = document.getElementById('meal-input').value.toLowerCase();
+    const rawText = document.getElementById('meal-input').value.trim();
     const resultBox = document.getElementById('meal-result-box');
-    const scoreBadge = document.getElementById('meal-score-badge');
-    const breakdownText = document.getElementById('meal-breakdown-text');
-    const suggestionText = document.getElementById('meal-suggestion-text');
 
-    let score = 7; // Default baseline score
-    let breakdown = "Your meal has a nice balance of nutrients.";
-    let suggestion = "💡 Tip: Try adding a glass of water or some healthy fats to complete this meal!";
+    if (!rawText) return;
 
-    // Keyword detection rules for smart feedback
-    if (mealText.includes('egg') || mealText.includes('chicken') || mealText.includes('meat') || mealText.includes('fish') || mealText.includes('protein')) {
-      score += 1;
-      breakdown = "🥚 Protein source detected: High-quality protein supports muscle maintenance and keeps you full longer.";
-    } else if (mealText.includes('chips') || mealText.includes('candy') || mealText.includes('soda') || mealText.includes('burger')) {
-      score -= 3;
-      breakdown = "⚠️ High processed food content detected, which can lead to quick energy crashes.";
-      suggestion = "💡 Tip: Try swapping processed snacks for whole foods like nuts, fruit, or vegetables.";
-    }
+    // Split text by lines so each line/meal is evaluated separately
+    const lines = rawText.split('\n').filter(line => line.trim() !== '');
+    let resultsHTML = '';
 
-    if (mealText.includes('peach') || mealText.includes('apple') || mealText.includes('banana') || mealText.includes('fruit') || mealText.includes('vegetable') || mealText.includes('salad')) {
-      score += 1;
-      breakdown += " Plus, the fruit/vegetables provide essential vitamins, fiber, and antioxidants.";
-      suggestion = "💡 Tip: This is a healthy combination! To make it even more filling, try pairing it with a handful of whole grains or nuts.";
-    }
+    lines.forEach(line => {
+      const mealTextLower = line.toLowerCase();
+      let score = 7;
+      let breakdown = "Meal has a decent balance of nutrients.";
+      let suggestion = "💡 Tip: Try adding a glass of water or healthy fats to complete this meal!";
 
-    // Keep score within 1-10 range
-    if (score > 10) score = 10;
-    if (score < 1) score = 1;
+      // Keyword detection rules
+      if (mealTextLower.includes('egg') || mealTextLower.includes('chicken') || mealTextLower.includes('meat') || mealTextLower.includes('fish') || mealTextLower.includes('protein')) {
+        score += 1;
+        breakdown = "🥚 Protein source detected: High-quality protein supports muscle maintenance and keeps you full.";
+      } else if (mealTextLower.includes('chips') || mealTextLower.includes('candy') || mealTextLower.includes('soda') || mealTextLower.includes('burger')) {
+        score -= 3;
+        breakdown = "⚠️ High processed food content detected, which can lead to energy crashes.";
+        suggestion = "💡 Tip: Try swapping processed snacks for whole foods like nuts, fruit, or vegetables.";
+      }
 
-    scoreBadge.innerText = `${score} / 10`;
-    breakdownText.innerText = breakdown;
-    suggestionText.innerText = suggestion;
+      if (mealTextLower.includes('peach') || mealTextLower.includes('apple') || mealTextLower.includes('banana') || mealTextLower.includes('fruit') || mealTextLower.includes('vegetable') || mealTextLower.includes('salad') || mealTextLower.includes('grapes')) {
+        score += 1;
+        breakdown += " Includes vitamins, fiber, and antioxidants.";
+        suggestion = "💡 Tip: Great choice of produce! Pairing it with whole grains or healthy proteins makes it even better.";
+      }
+
+      // Keep score within bounds
+      if (score > 10) score = 10;
+      if (score < 1) score = 1;
+
+      // Build individual card HTML for this specific meal line
+      resultsHTML += `
+        <div style="background: #ffffff; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h4 style="margin: 0; font-size: 1rem; color: var(--text-color);">${escapeHtml(line)}</h4>
+            <span style="background: var(--primary); color: white; padding: 3px 9px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">${score} / 10</span>
+          </div>
+          <p style="margin: 6px 0; line-height: 1.4; font-size: 0.9rem; color: var(--text-sub);">${breakdown}</p>
+          <p style="margin: 6px 0 0 0; line-height: 1.4; font-size: 0.9rem; font-weight: 500; color: #047857;">${suggestion}</p>
+        </div>
+      `;
+    });
+
+    resultBox.innerHTML = `<h3 style="margin-top: 0; font-size: 1.1rem; color: var(--primary); margin-bottom: 12px;">Analysis Results</h3>` + resultsHTML;
     resultBox.style.display = 'block';
   });
+}
+
+// Helper function to keep text safe
+function escapeHtml(text) {
+  const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+  return text.replace(/[&<>"']/g, m => map[m]);
 }
 
 function updateInsights() {
