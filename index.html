@@ -10,7 +10,7 @@
   <div class="container">
     <header>
       <h1>🌱 Wellness Hub</h1>
-      <p>Track your daily health habits and review your progress.</p>
+      <p>Track your daily health habits, rate meals, and review your progress.</p>
     </header>
 
     <main>
@@ -84,6 +84,28 @@
         <div id="form-feedback" style="margin-top: 10px; font-weight: bold;"></div>
       </section>
 
+      <!-- New: Smart Meal Analyzer & Rater Section -->
+      <section class="card">
+        <h2>🍽️ Smart Meal Rater</h2>
+        <p class="section-desc">Type your meal below to get an instant nutritional analysis, score, and tips.</p>
+        <form id="meal-form">
+          <div class="form-group">
+            <label>What did you eat?</label>
+            <textarea id="meal-input" rows="3" placeholder="e.g., Breakfast: 2 scrambled eggs and a peach" required></textarea>
+          </div>
+          <button type="submit">Analyze Meal</button>
+        </form>
+        
+        <div id="meal-result-box" style="display: none; margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid var(--border-color);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 id="meal-title-output" style="margin: 0; font-size: 1.1rem; color: var(--primary);">Analysis Results</h3>
+            <span id="meal-score-badge" style="background: var(--primary); color: white; padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 0.9rem;"></span>
+          </div>
+          <p id="meal-breakdown-text" style="margin: 8px 0; line-height: 1.4; font-size: 0.95rem;"></p>
+          <p id="meal-suggestion-text" style="margin: 8px 0; line-height: 1.4; font-size: 0.95rem; font-weight: 500; color: #047857;"></p>
+        </div>
+      </section>
+
       <!-- Weekly & Monthly Insights Section -->
       <section class="card">
         <h2>Weekly & Monthly Insights</h2>
@@ -100,7 +122,7 @@
         <div style="margin-top: 20px;">
           <h3>Areas for Improvement & Feedback</h3>
           <div id="feedback-tips-box" style="padding: 12px; background: rgba(0,0,0,0.03); border-radius: 6px; border: 1px solid var(--border-color); margin-top: 8px; font-size: 0.95rem; line-height: 1.4;">
-            Submit your daily check-ins to receive custom wellness feedback and improvement tips!
+            Submit your daily check-ins to receive custom wellness feedback!
           </div>
         </div>
       </section>
