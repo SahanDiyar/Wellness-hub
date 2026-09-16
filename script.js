@@ -74,30 +74,34 @@ if (mealForm) {
 
     lines.forEach(line => {
       const text = line.toLowerCase();
-      let score = 6; // Start at a neutral baseline
+      let score = 6;
       let breakdownParts = [];
       let suggestion = "";
 
       // 1. Check for Proteins
-      if (text.includes('egg') || text.includes('chicken') || text.includes('meat') || text.includes('fish') || text.includes('protein') || text.includes('turkey') || text.includes('tofu')) {
+      const hasProtein = text.includes('egg') || text.includes('chicken') || text.includes('meat') || text.includes('fish') || text.includes('protein') || text.includes('turkey') || text.includes('tofu');
+      if (hasProtein) {
         score += 2;
         breakdownParts.push("🥚 Excellent protein source detected to support muscle recovery and fullness.");
       }
 
       // 2. Check for Produce (Fruits & Veggies)
-      if (text.includes('apple') || text.includes('peach') || text.includes('banana') || text.includes('fruit') || text.includes('salad') || text.includes('vegetable') || text.includes('spinach') || text.includes('broccoli') || text.includes('grapes')) {
+      const hasProduce = text.includes('apple') || text.includes('peach') || text.includes('banana') || text.includes('fruit') || text.includes('salad') || text.includes('vegetable') || text.includes('spinach') || text.includes('broccoli') || text.includes('grapes') || text.includes('tomato') || text.includes('cucumber');
+      if (hasProduce) {
         score += 2;
         breakdownParts.push("🥗 Rich in vitamins, fiber, and antioxidants from fresh produce.");
       }
 
       // 3. Check for Grains & Carbs
-      if (text.includes('rice') || text.includes('bread') || text.includes('oats') || text.includes('pasta') || text.includes('potato')) {
+      const hasCarbs = text.includes('rice') || text.includes('bread') || text.includes('toast') || text.includes('oats') || text.includes('pasta') || text.includes('potato');
+      if (hasCarbs) {
         score += 1;
         breakdownParts.push("🌾 Contains healthy carbohydrates for sustained energy.");
       }
 
       // 4. Check for Junk / Processed Sugars
-      if (text.includes('cake') || text.includes('chips') || text.includes('candy') || text.includes('soda') || text.includes('chocolate') || text.includes('cookie') || text.includes('donut')) {
+      const hasJunk = text.includes('cake') || text.includes('chips') || text.includes('candy') || text.includes('soda') || text.includes('chocolate') || text.includes('cookie') || text.includes('donut') || text.includes('cookies');
+      if (hasJunk) {
         score -= 3;
         breakdownParts.push("⚠️ High in refined sugars and processed fats, which can cause energy spikes and crashes.");
         suggestion = "💡 Tip: Try swapping this sugary snack for a piece of fruit or Greek yogurt.";
@@ -107,11 +111,14 @@ if (mealForm) {
         breakdownParts.push("🍽️ General meal entry logged.");
       }
 
+      // Smart Targeted Suggestions
       if (!suggestion) {
-        if (text.includes('salad') && !text.includes('chicken') && !text.includes('egg') && !text.includes('meat')) {
+        if (hasProtein && hasCarbs && !hasProduce) {
+          suggestion = "💡 Tip: Great protein and carb combo! Try adding some fresh vegetables or a side salad to get your daily vitamins.";
+        } else if (text.includes('salad') && !hasProtein) {
           suggestion = "💡 Tip: This salad is light! Try adding some grilled chicken, beans, or eggs for an extra protein boost.";
-        } else if (text.includes('chicken') && text.includes('rice') && !text.includes('vegetable') && !text.includes('salad')) {
-          suggestion = "💡 Tip: Classic muscle-building meal! Consider adding a side of broccoli or a salad to get your daily vitamins.";
+        } else if (hasProtein && hasProduce) {
+          suggestion = "💡 Tip: Well-balanced meal! Pairing it with whole grains can make it even more satisfying.";
         } else {
           suggestion = "💡 Tip: Make sure to stay hydrated with a glass of water alongside this meal!";
         }
@@ -120,7 +127,6 @@ if (mealForm) {
       if (score > 10) score = 10;
       if (score < 1) score = 1;
 
-      // Color badge logic
       let badgeColor = 'var(--primary)';
       if (score < 6) badgeColor = '#ef4444';
       else if (score < 8) badgeColor = '#f59e0b';
@@ -166,7 +172,7 @@ function updateInsights() {
   let tips = [];
 
   if (latest.water === 'no') {
-    tips.push("💧 Hydration Alert: You drank less than 2 liter of water today. Make sure to grab a glass of water right now!");
+    tips.push("💧 Hydration Alert: You drank less than 2 liters of water today. Make sure to grab a glass of water right now!");
   }
   if (latest.sleep === 'less-than-6') {
     tips.push("😴 Rest Alert: You slept for less than 6 hours. Try to get to bed earlier tonight to recharge your energy.");

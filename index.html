@@ -19,7 +19,7 @@
         <h2>Daily Check-In</h2>
         <form id="checkin-form">
           <div class="form-group">
-            <label>1. Did you drink more than 2 liter of water today?</label>
+            <label>1. Did you drink more than 2 liters of water today?</label>
             <select id="water-input" required>
               <option value="">Select...</option>
               <option value="yes">Yes</option>
@@ -84,25 +84,20 @@
         <div id="form-feedback" style="margin-top: 10px; font-weight: bold;"></div>
       </section>
 
-      <!-- New: Smart Meal Analyzer & Rater Section -->
+      <!-- Smart Meal Analyzer & Rater Section -->
       <section class="card">
         <h2>🍽️ Smart Meal Rater</h2>
-        <p class="section-desc">Type your meal below to get an instant nutritional analysis, score, and tips.</p>
+        <p class="section-desc">Type your meals below (one per line) to get instant nutritional analyses, scores, and tips.</p>
         <form id="meal-form">
           <div class="form-group">
             <label>What did you eat?</label>
-            <textarea id="meal-input" rows="3" placeholder="e.g., Breakfast: 2 scrambled eggs and a peach" required></textarea>
+            <textarea id="meal-input" rows="4" placeholder="Breakfast: 2 eggs and an apple&#10;Lunch: Chicken and bread&#10;Dinner: Salad" required></textarea>
           </div>
-          <button type="submit">Analyze Meal</button>
+          <button type="submit">Analyze Meals</button>
         </form>
         
         <div id="meal-result-box" style="display: none; margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid var(--border-color);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <h3 id="meal-title-output" style="margin: 0; font-size: 1.1rem; color: var(--primary);">Analysis Results</h3>
-            <span id="meal-score-badge" style="background: var(--primary); color: white; padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 0.9rem;"></span>
-          </div>
-          <p id="meal-breakdown-text" style="margin: 8px 0; line-height: 1.4; font-size: 0.95rem;"></p>
-          <p id="meal-suggestion-text" style="margin: 8px 0; line-height: 1.4; font-size: 0.95rem; font-weight: 500; color: #047857;"></p>
+          <!-- Results populated dynamically via script.js -->
         </div>
       </section>
 
