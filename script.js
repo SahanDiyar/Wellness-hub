@@ -166,7 +166,7 @@ function updateInsights() {
   let tips = [];
 
   if (latest.water === 'no') {
-    tips.push("💧 Hydration Alert: You drank less than 1 liter of water today. Make sure to grab a glass of water right now!");
+    tips.push("💧 Hydration Alert: You drank less than 2 liter of water today. Make sure to grab a glass of water right now!");
   }
   if (latest.sleep === 'less-than-6') {
     tips.push("😴 Rest Alert: You slept for less than 6 hours. Try to get to bed earlier tonight to recharge your energy.");
