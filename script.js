@@ -59,7 +59,7 @@ if (checkinForm) {
   });
 }
 
-// --- SMART MEAL RATER LOGIC (MULTI-MEAL) ---
+// --- SMART MEAL RATER LOGIC (ADVANCED MULTI-MEAL) ---
 const mealForm = document.getElementById('meal-form');
 if (mealForm) {
   mealForm.addEventListener('submit', (e) => {
@@ -69,44 +69,69 @@ if (mealForm) {
 
     if (!rawText) return;
 
-    // Split text by lines so each line/meal is evaluated separately
     const lines = rawText.split('\n').filter(line => line.trim() !== '');
     let resultsHTML = '';
 
     lines.forEach(line => {
-      const mealTextLower = line.toLowerCase();
-      let score = 7;
-      let breakdown = "Meal has a decent balance of nutrients.";
-      let suggestion = "💡 Tip: Try adding a glass of water or healthy fats to complete this meal!";
+      const text = line.toLowerCase();
+      let score = 6; // Start at a neutral baseline
+      let breakdownParts = [];
+      let suggestion = "";
 
-      // Keyword detection rules
-      if (mealTextLower.includes('egg') || mealTextLower.includes('chicken') || mealTextLower.includes('meat') || mealTextLower.includes('fish') || mealTextLower.includes('protein')) {
+      // 1. Check for Proteins
+      if (text.includes('egg') || text.includes('chicken') || text.includes('meat') || text.includes('fish') || text.includes('protein') || text.includes('turkey') || text.includes('tofu')) {
+        score += 2;
+        breakdownParts.push("🥚 Excellent protein source detected to support muscle recovery and fullness.");
+      }
+
+      // 2. Check for Produce (Fruits & Veggies)
+      if (text.includes('apple') || text.includes('peach') || text.includes('banana') || text.includes('fruit') || text.includes('salad') || text.includes('vegetable') || text.includes('spinach') || text.includes('broccoli') || text.includes('grapes')) {
+        score += 2;
+        breakdownParts.push("🥗 Rich in vitamins, fiber, and antioxidants from fresh produce.");
+      }
+
+      // 3. Check for Grains & Carbs
+      if (text.includes('rice') || text.includes('bread') || text.includes('oats') || text.includes('pasta') || text.includes('potato')) {
         score += 1;
-        breakdown = "🥚 Protein source detected: High-quality protein supports muscle maintenance and keeps you full.";
-      } else if (mealTextLower.includes('chips') || mealTextLower.includes('candy') || mealTextLower.includes('soda') || mealTextLower.includes('burger')) {
+        breakdownParts.push("🌾 Contains healthy carbohydrates for sustained energy.");
+      }
+
+      // 4. Check for Junk / Processed Sugars
+      if (text.includes('cake') || text.includes('chips') || text.includes('candy') || text.includes('soda') || text.includes('chocolate') || text.includes('cookie') || text.includes('donut')) {
         score -= 3;
-        breakdown = "⚠️ High processed food content detected, which can lead to energy crashes.";
-        suggestion = "💡 Tip: Try swapping processed snacks for whole foods like nuts, fruit, or vegetables.";
+        breakdownParts.push("⚠️ High in refined sugars and processed fats, which can cause energy spikes and crashes.");
+        suggestion = "💡 Tip: Try swapping this sugary snack for a piece of fruit or Greek yogurt.";
       }
 
-      if (mealTextLower.includes('peach') || mealTextLower.includes('apple') || mealTextLower.includes('banana') || mealTextLower.includes('fruit') || mealTextLower.includes('vegetable') || mealTextLower.includes('salad') || mealTextLower.includes('grapes')) {
-        score += 1;
-        breakdown += " Includes vitamins, fiber, and antioxidants.";
-        suggestion = "💡 Tip: Great choice of produce! Pairing it with whole grains or healthy proteins makes it even better.";
+      if (breakdownParts.length === 0) {
+        breakdownParts.push("🍽️ General meal entry logged.");
       }
 
-      // Keep score within bounds
+      if (!suggestion) {
+        if (text.includes('salad') && !text.includes('chicken') && !text.includes('egg') && !text.includes('meat')) {
+          suggestion = "💡 Tip: This salad is light! Try adding some grilled chicken, beans, or eggs for an extra protein boost.";
+        } else if (text.includes('chicken') && text.includes('rice') && !text.includes('vegetable') && !text.includes('salad')) {
+          suggestion = "💡 Tip: Classic muscle-building meal! Consider adding a side of broccoli or a salad to get your daily vitamins.";
+        } else {
+          suggestion = "💡 Tip: Make sure to stay hydrated with a glass of water alongside this meal!";
+        }
+      }
+
       if (score > 10) score = 10;
       if (score < 1) score = 1;
 
-      // Build individual card HTML for this specific meal line
+      // Color badge logic
+      let badgeColor = 'var(--primary)';
+      if (score < 6) badgeColor = '#ef4444';
+      else if (score < 8) badgeColor = '#f59e0b';
+
       resultsHTML += `
         <div style="background: #ffffff; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <h4 style="margin: 0; font-size: 1rem; color: var(--text-color);">${escapeHtml(line)}</h4>
-            <span style="background: var(--primary); color: white; padding: 3px 9px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">${score} / 10</span>
+            <span style="background: ${badgeColor}; color: white; padding: 3px 9px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">${score} / 10</span>
           </div>
-          <p style="margin: 6px 0; line-height: 1.4; font-size: 0.9rem; color: var(--text-sub);">${breakdown}</p>
+          <p style="margin: 6px 0; line-height: 1.4; font-size: 0.9rem; color: var(--text-sub);">${breakdownParts.join(" ")}</p>
           <p style="margin: 6px 0 0 0; line-height: 1.4; font-size: 0.9rem; font-weight: 500; color: #047857;">${suggestion}</p>
         </div>
       `;
@@ -117,7 +142,6 @@ if (mealForm) {
   });
 }
 
-// Helper function to keep text safe
 function escapeHtml(text) {
   const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
   return text.replace(/[&<>"']/g, m => map[m]);
