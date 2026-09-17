@@ -192,6 +192,7 @@ function escapeHtml(text) {
 function updateInsights() {
   const weeklyValEl = document.getElementById('weekly-score-val');
   const monthlyValEl = document.getElementById('monthly-score-val');
+  const streakValEl = document.getElementById('streak-score-val');
   const tipsBox = document.getElementById('feedback-tips-box');
 
   if (checkIns.length === 0) return;
@@ -203,6 +204,47 @@ function updateInsights() {
   const recentCheckins = checkIns.filter(c => new Date(c.timestamp) >= sevenDaysAgo);
   weeklyValEl.innerText = `${recentCheckins.length} / 7 days`;
   monthlyValEl.innerText = `${checkIns.length} days`;
+
+  // --- STREAK CALCULATION LOGIC ---
+  const sortedCheckins = [...checkIns].sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+  let currentStreak = 0;
+  let lastDate = null;
+
+  sortedCheckins.forEach(entry => {
+    const entryDate = new Date(entry.date);
+    entryDate.setHours(0, 0, 0, 0);
+
+    if (!lastDate) {
+      currentStreak = 1;
+    } else {
+      const diffTime = entryDate - lastDate;
+      const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+      if (diffDays === 1) {
+        currentStreak++;
+      } else if (diffDays > 1) {
+        currentStreak = 1; 
+      }
+    }
+    lastDate = entryDate;
+  });
+
+  if (sortedCheckins.length > 0) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const lastEntryDate = new Date(sortedCheckins[sortedCheckins.length - 1].date);
+    lastEntryDate.setHours(0, 0, 0, 0);
+
+    const dayDifference = (today - lastEntryDate) / (1000 * 60 * 60 * 24);
+    if (dayDifference > 1) {
+      currentStreak = 0; 
+    }
+  }
+
+  if (streakValEl) {
+    streakValEl.innerText = `🔥 ${currentStreak} days`;
+  }
 
   const latest = checkIns[checkIns.length - 1];
   let tips = [];

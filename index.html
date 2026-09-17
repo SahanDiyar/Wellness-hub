@@ -108,7 +108,7 @@
       <!-- Weekly & Monthly Insights Section -->
       <section class="card">
         <h2>Weekly & Monthly Insights</h2>
-        <div class="metrics-grid">
+        <div class="metrics-grid" style="grid-template-columns: repeat(3, 1fr);">
           <div class="metric-box">
             <h3>Weekly Consistency</h3>
             <p id="weekly-score-val">0 / 7</p>
@@ -116,6 +116,10 @@
           <div class="metric-box">
             <h3>Total Logged Days</h3>
             <p id="monthly-score-val">0 days</p>
+          </div>
+          <div class="metric-box">
+            <h3>Current Streak</h3>
+            <p id="streak-score-val">🔥 0 days</p>
           </div>
         </div>
         <div style="margin-top: 20px;">
