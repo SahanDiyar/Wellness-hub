@@ -2,6 +2,32 @@
 
 let checkIns = JSON.parse(localStorage.getItem('wellness_checkins')) || [];
 
+// --- THEME TOGGLE LOGIC ---
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  
+  if (newTheme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    localStorage.setItem('wellness_theme', 'dark');
+    document.getElementById('theme-toggle-btn').innerText = '☀️ Light';
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('wellness_theme', 'light');
+    document.getElementById('theme-toggle-btn').innerText = '🌙 Dark';
+  }
+}
+
+// Load saved theme on startup
+window.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('wellness_theme');
+  if (savedTheme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    const btn = document.getElementById('theme-toggle-btn');
+    if (btn) btn.innerText = '☀️ Light';
+  }
+});
+
 function toggleExerciseDetails() {
   const yn = document.getElementById('exercise-yn').value;
   const details = document.getElementById('exercise-details');
@@ -51,7 +77,7 @@ if (checkinForm) {
     localStorage.setItem('wellness_checkins', JSON.stringify(checkIns));
     
     const feedback = document.getElementById('form-feedback');
-    feedback.style.color = "#10b981";
+    feedback.style.color = "var(--primary)";
     feedback.innerText = "Check-in saved successfully! 🎉";
     setTimeout(() => { feedback.innerText = ""; }, 3000);
 
@@ -132,13 +158,13 @@ if (mealForm) {
       else if (score < 8) badgeColor = '#f59e0b';
 
       resultsHTML += `
-        <div style="background: #ffffff; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px;">
+        <div style="background: var(--card-bg); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <h4 style="margin: 0; font-size: 1rem; color: var(--text-color);">${escapeHtml(line)}</h4>
             <span style="background: ${badgeColor}; color: white; padding: 3px 9px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">${score} / 10</span>
           </div>
           <p style="margin: 6px 0; line-height: 1.4; font-size: 0.9rem; color: var(--text-sub);">${breakdownParts.join(" ")}</p>
-          <p style="margin: 6px 0 0 0; line-height: 1.4; font-size: 0.9rem; font-weight: 500; color: #047857;">${suggestion}</p>
+          <p style="margin: 6px 0 0 0; line-height: 1.4; font-size: 0.9rem; font-weight: 500; color: var(--primary);">${suggestion}</p>
         </div>
       `;
     });

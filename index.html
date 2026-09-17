@@ -9,7 +9,11 @@
 <body id="body-layout">
   <div class="container">
     <header>
-      <h1>🌱 Wellness Hub</h1>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div style="width: 40px;"></div> <!-- Spacer for alignment -->
+        <h1 style="margin: 0;">🌱 Wellness Hub</h1>
+        <button id="theme-toggle-btn" onclick="toggleTheme()" style="width: auto; padding: 6px 12px; font-size: 0.85rem; background: var(--border-color); color: var(--text-color);">🌙 Dark</button>
+      </div>
       <p>Track your daily health habits, rate meals, and review your progress.</p>
     </header>
 
@@ -96,7 +100,7 @@
           <button type="submit">Analyze Meals</button>
         </form>
         
-        <div id="meal-result-box" style="display: none; margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid var(--border-color);">
+        <div id="meal-result-box" style="display: none; margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px; border: 1px solid var(--border-color);">
           <!-- Results populated dynamically via script.js -->
         </div>
       </section>
@@ -116,7 +120,7 @@
         </div>
         <div style="margin-top: 20px;">
           <h3>Areas for Improvement & Feedback</h3>
-          <div id="feedback-tips-box" style="padding: 12px; background: rgba(0,0,0,0.03); border-radius: 6px; border: 1px solid var(--border-color); margin-top: 8px; font-size: 0.95rem; line-height: 1.4;">
+          <div id="feedback-tips-box" style="padding: 12px; background: var(--bg-color); border-radius: 6px; border: 1px solid var(--border-color); margin-top: 8px; font-size: 0.95rem; line-height: 1.4;">
             Submit your daily check-ins to receive custom wellness feedback!
           </div>
         </div>
