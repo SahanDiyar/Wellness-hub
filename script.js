@@ -133,6 +133,16 @@ if (mealForm) {
         suggestion = "💡 Tip: Try swapping this sugary snack for a piece of fruit or Greek yogurt.";
       }
 
+      // 5. Check for Drinks / Caffeine only (like Iced Coffee)
+      const hasDrink = text.includes('coffee') || text.includes('iced coffee') || text.includes('ice coffee') || text.includes('latte') || text.includes('tea') || text.includes('espresso');
+      const hasSolidFood = hasProtein || hasProduce || hasCarbs || text.includes('toast') || text.includes('cereal') || text.includes('yogurt') || text.includes('oatmeal');
+      
+      if (hasDrink && !hasSolidFood) {
+        score = 4;
+        breakdownParts.push("☕ Contains caffeine, but lacks nutritional substance and calories needed for a meal.");
+        suggestion = "💡 Tip: This is just a caffeinated drink, not an actual meal! Try pairing it with some solid food or protein for proper fuel.";
+      }
+
       if (breakdownParts.length === 0) {
         breakdownParts.push("🍽️ General meal entry logged.");
       }
