@@ -104,11 +104,13 @@ if (mealForm) {
       let breakdownParts = [];
       let suggestion = "";
 
+      const isSnackEntry = text.startsWith('snack') || text.includes('snack:');
+
       // 1. Check for Proteins
-      const hasProtein = text.includes('egg') || text.includes('chicken') || text.includes('meat') || text.includes('fish') || text.includes('protein') || text.includes('turkey') || text.includes('tofu');
+      const hasProtein = text.includes('egg') || text.includes('chicken') || text.includes('meat') || text.includes('fish') || text.includes('protein') || text.includes('turkey') || text.includes('tofu') || text.includes('yogurt') || text.includes('nuts') || text.includes('almonds');
       if (hasProtein) {
         score += 2;
-        breakdownParts.push("🥚 Excellent protein source detected to support muscle recovery and fullness.");
+        breakdownParts.push("🥚 Good protein source detected to keep you full and energized.");
       }
 
       // 2. Check for Produce (Fruits & Veggies)
@@ -122,41 +124,59 @@ if (mealForm) {
       const hasCarbs = text.includes('rice') || text.includes('bread') || text.includes('toast') || text.includes('oats') || text.includes('pasta') || text.includes('potato');
       if (hasCarbs) {
         score += 1;
-        breakdownParts.push("🌾 Contains healthy carbohydrates for sustained energy.");
+        breakdownParts.push("🌾 Contains carbohydrates for energy.");
       }
 
       // 4. Check for Junk / Processed Sugars
       const hasJunk = text.includes('cake') || text.includes('chips') || text.includes('candy') || text.includes('soda') || text.includes('chocolate') || text.includes('cookie') || text.includes('donut') || text.includes('cookies');
       if (hasJunk) {
-        score -= 3;
-        breakdownParts.push("⚠️ High in refined sugars and processed fats, which can cause energy spikes and crashes.");
-        suggestion = "💡 Tip: Try swapping this sugary snack for a piece of fruit or Greek yogurt.";
+        score -= 2;
+        breakdownParts.push("⚠️ High in refined sugars and processed fats, which can cause energy crashes.");
+        if (isSnackEntry) {
+          suggestion = "💡 Tip: To make this snack healthier, try reducing the sugary ingredients or swap it for fruit, nuts, or Greek yogurt.";
+        } else {
+          suggestion = "💡 Tip: Try swapping this sugary item for a piece of fruit or a healthier alternative.";
+        }
       }
 
       // 5. Check for Drinks / Caffeine only (like Iced Coffee)
       const hasDrink = text.includes('coffee') || text.includes('iced coffee') || text.includes('ice coffee') || text.includes('latte') || text.includes('tea') || text.includes('espresso');
-      const hasSolidFood = hasProtein || hasProduce || hasCarbs || text.includes('toast') || text.includes('cereal') || text.includes('yogurt') || text.includes('oatmeal');
+      const hasSolidFood = hasProtein || hasProduce || hasCarbs || text.includes('toast') || text.includes('cereal') || text.includes('oatmeal');
       
       if (hasDrink && !hasSolidFood) {
-        score = 4;
-        breakdownParts.push("☕ Contains caffeine, but lacks nutritional substance and calories needed for a meal.");
-        suggestion = "💡 Tip: This is just a caffeinated drink, not an actual meal! Try pairing it with some solid food or protein for proper fuel.";
+        if (isSnackEntry) {
+          score = 6;
+          breakdownParts.push("☕ A caffeinated beverage choice for a snack.");
+          suggestion = "💡 Tip: To make this snack more nourishing, try adding a splash of milk/protein or pairing it with a small handful of nuts or a piece of fruit!";
+        } else {
+          score = 4;
+          breakdownParts.push("☕ Contains caffeine, but lacks nutritional substance and calories needed for a meal.");
+          suggestion = "💡 Tip: This is just a caffeinated drink, not an actual meal! Try pairing it with some solid food or protein for proper fuel.";
+        }
       }
 
       if (breakdownParts.length === 0) {
-        breakdownParts.push("🍽️ General meal entry logged.");
+        breakdownParts.push("🍽️ General entry logged.");
       }
 
-      // Smart Targeted Suggestions
+      // Smart Targeted Suggestions if none set yet
       if (!suggestion) {
-        if (hasProtein && hasCarbs && !hasProduce) {
-          suggestion = "💡 Tip: Great protein and carb combo! Try adding some fresh vegetables or a side salad to get your daily vitamins.";
-        } else if (text.includes('salad') && !hasProtein) {
-          suggestion = "💡 Tip: This salad is light! Try adding some grilled chicken, beans, or eggs for an extra protein boost.";
-        } else if (hasProtein && hasProduce) {
-          suggestion = "💡 Tip: Well-balanced meal! Pairing it with whole grains can make it even more satisfying.";
+        if (isSnackEntry) {
+          if (hasProduce) {
+            suggestion = "💡 Tip: Great healthy snack choice! You could pair it with a bit of protein (like nuts or cheese) to keep you full longer.";
+          } else {
+            suggestion = "💡 Tip: To upgrade this snack, try adding a piece of fruit or a source of protein to boost its nutritional value.";
+          }
         } else {
-          suggestion = "💡 Tip: Make sure to stay hydrated with a glass of water alongside this meal!";
+          if (hasProtein && hasCarbs && !hasProduce) {
+            suggestion = "💡 Tip: Great protein and carb combo! Try adding some fresh vegetables or a side salad to get your daily vitamins.";
+          } else if (text.includes('salad') && !hasProtein) {
+            suggestion = "💡 Tip: This salad is light! Try adding some grilled chicken, beans, or eggs for an extra protein boost.";
+          } else if (hasProtein && hasProduce) {
+            suggestion = "💡 Tip: Well-balanced meal! Pairing it with whole grains can make it even more satisfying.";
+          } else {
+            suggestion = "💡 Tip: Make sure to stay hydrated with a glass of water alongside this meal!";
+          }
         }
       }
 
@@ -205,7 +225,6 @@ function updateInsights() {
   weeklyValEl.innerText = `${recentCheckins.length} / 7 days`;
   monthlyValEl.innerText = `${checkIns.length} days`;
 
-  // --- STREAK CALCULATION LOGIC ---
   const sortedCheckins = [...checkIns].sort((a, b) => new Date(a.date) - new Date(b.date));
   
   let currentStreak = 0;
